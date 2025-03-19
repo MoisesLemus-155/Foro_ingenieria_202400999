@@ -38,8 +38,22 @@ const createPublicacion = async (req, res) => {
     }
 }
 
+const deleteMiPublicacion = async (req, res) => {
+    const registro_academico = req.session.registro_academico;
+    const { id } = req.params;
+    try {
+        const db = await dbConection();
+        await db.query('DELETE FROM publicacion WHERE usuario_id = ? AND id = ?', [registro_academico, id]);
+        res.status(200).json({ message: 'Publicación eliminada' });
+    } catch (error) {
+        console.error('Error en la eliminación de publicación:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
 module.exports = {
     getPublicaciones,
     getMisPublicaciones,
-    createPublicacion
+    createPublicacion,
+    deleteMiPublicacion
 }

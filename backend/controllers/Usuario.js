@@ -55,8 +55,38 @@ const UpdateMyUser = async(req, res) => {
     }
 }
 
+const cursosAprobados = async(req, res) => {
+    const registro_academico = req.session.registro_academico;
+    try {
+        
+        if (registro_academico === null) {
+            return res.status(401).json({ error: 'No autorizado, inicia sesion primero.' });
+        }
+
+        const db = await dbConection();
+        const {curso_id} = req.body;
+        const [cursoRepeted] = await db.query('SELECT * FROM cursos_aprobados WHERE curso_id = ?', [curso_id]);
+        if (cursoRepeted.length > 0) {
+            return res.status(400).json({ error: 'El curso ya fue aprobado' });
+        }
+        const [totalCursos] = await db.query('SELECT COUNT(*) AS total_cursos FROM curso');
+        if (curso_id > totalCursos[0].total_cursos) {
+            return res.status(400).json({ error: 'El id del curso no existe' });
+        }
+        const [cursos] = await db.query('INSERT INTO cursos_aprobados (usuario_id, curso_id) VALUES(?, ?)', [registro_academico, curso_id]);
+        res.status(200).json({
+            mensaje: 'Curso aprobado correctamente',
+            data: cursos
+        });
+    } catch (error) {
+        console.error('Error en la obtención de cursos aprobados:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
 
 module.exports = {
     getUsers,
-    UpdateMyUser
+    UpdateMyUser,
+    cursosAprobados
 }

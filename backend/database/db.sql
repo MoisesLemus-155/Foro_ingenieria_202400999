@@ -16,6 +16,14 @@ CREATE TABLE IF NOT EXISTS curso (
     creditos INT
 );
 
+CREATE TABLE IF NOT EXISTS cursos_aprobados (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT,
+    curso_id INT,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(registro_academico) ON DELETE CASCADE,
+    FOREIGN KEY (curso_id) REFERENCES curso(id) ON DELETE CASCADE
+)
+
 CREATE TABLE IF NOT EXISTS profesor (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nombres VARCHAR(255),
