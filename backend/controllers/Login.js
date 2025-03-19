@@ -89,9 +89,38 @@ const newPassword = async (req, res) => {
     }
 }
 
+const register = async(req, res) =>{
+    const {registro_academico, nombres, apellidos, correo, password} = req.body;
+    if (!registro_academico || !nombres || !apellidos || !correo || !password) {
+        return res.status(400).json({ error: 'Todos los campos son requeridos' });
+    }
+    try {
+        const db = await dbConection();
+        const [userRepeted] = await db.query('SELECT * FROM usuario WHERE registro_academico = ?', [registro_academico]);
+        if (userRepeted.length > 0) {
+            return res.status(400).json({ error: 'El registro académico ya está registrado, intenta otro' });
+        }
+        const [correoRepeted] = await db.query('SELECT * FROM usuario WHERE correo = ?', [correo]);
+        if (correoRepeted.length > 0) {
+            return res.status(400).json({ error: 'El correo ya está registrado, intenta otro' });
+        }
+
+        const [result] = await db.query('INSERT INTO usuario (registro_academico, nombres, apellidos, correo, password) VALUES (?, ?, ?, ?, ?)', [registro_academico, nombres, apellidos, correo, password]);
+        if (result.affectedRows === 1) {
+            return res.status(201).json({
+                message: 'Usuario registrado correctamente'
+            });
+        }
+    } catch (error) {
+        console.error('Error en el registro:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
 
 module.exports = {
     login,
     lostPassword,
-    newPassword
+    newPassword,
+    register
 }
