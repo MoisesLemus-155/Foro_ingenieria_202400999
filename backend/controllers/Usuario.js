@@ -65,7 +65,7 @@ const cursosAprobados = async(req, res) => {
 
         const db = await dbConection();
         const {curso_id} = req.body;
-        const [cursoRepeted] = await db.query('SELECT * FROM cursos_aprobados WHERE curso_id = ?', [curso_id]);
+        const [cursoRepeted] = await db.query('SELECT * FROM cursos_aprobados WHERE curso_id = ? AND usuario_id = ?', [curso_id, registro_academico]);
         if (cursoRepeted.length > 0) {
             return res.status(400).json({ error: 'El curso ya fue aprobado' });
         }
@@ -84,9 +84,28 @@ const cursosAprobados = async(req, res) => {
     }
 }
 
+const deleteCursosAprobados = async(req, res) => {
+    const registro_academico = req.session.registro_academico;
+    const { id } = req.params;
+    try {
+        const db = await dbConection();
+        // const [totalmiscursos] = await db.query('SELECT COUNT(*) AS total_cursos FROM cursos_aprobados WHERE usuario_id = ?', [registro_academico]);
+        // if (id > totalmiscursos[0].total_cursos) {
+        //     return res.status(400).json({ message: 'El id del curso no existe' });
+        // }
+        
+        await db.query('DELETE FROM cursos_aprobados WHERE usuario_id = ? AND curso_id = ?', [registro_academico, id]);
+        res.status(200).json({ message: 'Curso eliminado' });
+    } catch (error) {
+        console.error('Error en la eliminación de curso:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
 
 module.exports = {
     getUsers,
     UpdateMyUser,
-    cursosAprobados
+    cursosAprobados,
+    deleteCursosAprobados
 }
