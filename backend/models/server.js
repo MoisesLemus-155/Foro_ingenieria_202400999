@@ -1,17 +1,24 @@
 const express = require('express')
 const cors = require('cors')
 const { dbConection } = require('../database/connector')   
+const session = require('express-session')
 
 class Server{
     constructor(){
         this.app = express();
         this.port = process.env.PORT || 8080;
         // this.personasPath = '/api/persons'
-        // this.loginPath = '/api/login'
+        this.loginPath = '/api/login'
         this.usuarioPath = '/api/usuario'
         this.app.get('/', (req, res) => {
             res.send("PAGINA DE INICIO")
         })
+
+        this.app.use(session({
+            secret: 'clave-secreta', // Cambia esto en producción
+            resave: false,
+            saveUninitialized: true
+        }));
 
         this.conectarDB();
 
@@ -34,7 +41,7 @@ class Server{
     routes(){
         //ACA VAN LAS RUTAS 
         // this.app.use("/api/persons", require('../routes/persons'))
-        // this.app.use("/api/login", require('../routes/login'))
+        this.app.use("/api/login", require('../routes/login'))
         this.app.use("/api/usuario", require('../routes/usuario'))
     }
 
