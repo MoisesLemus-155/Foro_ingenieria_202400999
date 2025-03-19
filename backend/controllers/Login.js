@@ -1,6 +1,5 @@
 const express = require('express')
 const { dbConection } = require('../database/connector')
-const session = require('express-session')
 
 const login = async (req, res) => {
     try {
@@ -16,6 +15,10 @@ const login = async (req, res) => {
         if (loged.length === 0) {
             return res.status(401).json({ error: 'Credenciales incorrectas' });
         }
+
+        req.session.registro_academico = loged[0].registro_academico;
+        console.log(req.session.registro_academico);
+        
         console.log("continua el proceso");
         
         res.status(200).json({
@@ -116,7 +119,6 @@ const register = async(req, res) =>{
         res.status(500).json({ error: 'Error en el servidor' });
     }
 }
-
 
 module.exports = {
     login,

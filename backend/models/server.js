@@ -14,12 +14,6 @@ class Server{
             res.send("PAGINA DE INICIO")
         })
 
-        this.app.use(session({
-            secret: 'clave-secreta', // Cambia esto en producción
-            resave: false,
-            saveUninitialized: true
-        }));
-
         this.conectarDB();
 
         this.middlewares();
@@ -32,7 +26,15 @@ class Server{
     }
 
     middlewares(){
+        
         this.app.use(cors());
+
+        this.app.use(session({
+            secret: 'clave-secreta', // Cambia esto en producción
+            resave: false,
+            saveUninitialized: true
+        }));
+        
 
         this.app.use(express.json());
 
