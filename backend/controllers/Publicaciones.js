@@ -1,0 +1,45 @@
+const express  = require('express');
+const { dbConection } = require('../database/connector');
+
+
+const getPublicaciones = async (req, res) => {
+    try {
+        const db = await dbConection();
+        const [publicaciones] = await db.query('SELECT * FROM publicacion');
+        res.status(200).json(publicaciones);
+    } catch (error) {
+        console.error('Error en la obtención de publicaciones:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
+const getMisPublicaciones = async (req, res) => {
+    const registro_academico = req.session.registro_academico;
+    try {
+        const db = await dbConection();
+        const [publicaciones] = await db.query('SELECT * FROM publicacion WHERE usuario_id = ?', [registro_academico]);
+        res.status(200).json(publicaciones);
+    } catch (error) {
+        console.error('Error en la obtención de mis publicaciones:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
+const createPublicacion = async (req, res) => {
+    const registro_academico = req.session.registro_academico;
+    const {cat_o_curso, mensaje } = req.body;
+    try {
+        const db = await dbConection();
+        await db.query('INSERT INTO publicacion (usuario_id, cat_o_curso, mensaje) VALUES (?, ?, ?)', [registro_academico, cat_o_curso, mensaje]);
+        res.status(201).json({ message: 'Publicación creada' });
+    } catch (error) {
+        console.error('Error en la creación de publicación:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
+module.exports = {
+    getPublicaciones,
+    getMisPublicaciones,
+    createPublicacion
+}

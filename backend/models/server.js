@@ -7,9 +7,6 @@ class Server{
     constructor(){
         this.app = express();
         this.port = process.env.PORT || 8080;
-        // this.personasPath = '/api/persons'
-        this.loginPath = '/api/login'
-        this.usuarioPath = '/api/usuario'
         this.app.get('/', (req, res) => {
             res.send("PAGINA DE INICIO")
         })
@@ -42,9 +39,10 @@ class Server{
 
     routes(){
         //ACA VAN LAS RUTAS 
-        // this.app.use("/api/persons", require('../routes/persons'))
+        this.app.use("/api/publis", require('../routes/publicacion'))|
         this.app.use("/api/login", require('../routes/login'))
         this.app.use("/api/usuario", require('../routes/usuario'))
+        this.app.use("/api/cursos", require('../routes/cursos_catedraticos'))
     }
 
     listen(){
