@@ -1,22 +1,25 @@
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import "./Home.css";
-import { listaPublicaciones } from "./Publicaciones/Api/ApiPublicaciones";
+import { useNavigate } from "react-router-dom";
+import { comentar, listaPublicaciones } from "./Publicaciones/Api/ApiPublicaciones";
 
 export const PantallaInicial = () => {
     const [search, setSearch] = useState("");
     const [results, setResults] = useState([]);
     const [publicaciones, setPublicaciones] = useState([])
+    const navigate = useNavigate();
 
-    // const listaPublicacionesView = async () => {
-    //     const publisList = await listaPublicaciones();
-    //     setPublicaciones(publisList);
-    // };
+    const [formData, setFormData] = useState({
+        mensaje: "",
+        publicacion_id: "",
+    });
 
     const listaPublicacionesView = async () => {
         try {
             const publisResponse = await listaPublicaciones();
             console.log("Respuesta completa de la API:", publisResponse);
-    
+
             if (publisResponse && Array.isArray(publisResponse.data)) {
                 setPublicaciones(publisResponse.data); // Accede al array dentro de data
             } else {
@@ -27,6 +30,37 @@ export const PantallaInicial = () => {
             console.error("Error al obtener publicaciones:", error);
             setPublicaciones([]);
         }
+    };
+
+    const handleComentario = async (e, publicacionId) => {
+        e.preventDefault();
+
+        if (!formData.mensaje.trim()) {
+            alert("El comentario no puede estar vacío.");
+            return;
+        }
+
+        const result = await comentar(formData.mensaje, publicacionId); // Enviar el id correcto
+
+        if (result) {
+            Swal.fire({
+                icon: "success",
+                title: "PERFECTO!",
+                text: "Comentario publicado!",
+                confirmButtonText: '<span class= "btn-swal">OK</span>',
+            });
+
+            // Recargar publicaciones para mostrar el nuevo comentario
+            listaPublicacionesView();
+
+            // Limpiar el campo de comentario
+            setFormData({ ...formData, mensaje: "" });
+        }
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     useEffect(() => {
@@ -52,7 +86,7 @@ export const PantallaInicial = () => {
             <div className="container-navbar">
                 <nav className="navbar navbar-expand-lg bg-body-tertiary">
                     <div className="container-fluid">
-                        <button className="btn navbar-brand" href="#">Cerrar Sesion</button>
+                        <button className="btn navbar-brand" onClick={() => {navigate('/')}}>Cerrar Sesion</button>
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>
                         </button>
@@ -62,7 +96,7 @@ export const PantallaInicial = () => {
                                     <a className="btn navbar-brand active" aria-current="page" href="#">Ver Perfil</a>
                                 </li>
                                 <li className="nav-item">
-                                    <button className=" btn navbar-brand active" aria-current="page" href="#">Hacer una Publicacion</button>
+                                    <button className=" btn navbar-brand active" onClick={() =>{navigate('/CreatePublicacion')}}>Hacer una Publicacion</button>
                                 </li>
                                 <li className="nav-item">
                                     {/* <a className="nav-link" href="#">Buscar</a> */}
@@ -94,12 +128,15 @@ export const PantallaInicial = () => {
                                         <div className="col-6">
                                             <strong>Usuario:</strong> {p.usuario_id}
                                         </div>
-                                        <div className="col-6">
+                                        <div className="col-6 text-end">
                                             <strong>Fecha:</strong> {new Date(p.publicacion_fecha).toLocaleString()}
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div className="col-12"><strong>Catedratico o curso:</strong> {p.cat_o_curso}</div>
+                                        <div className="col-12"><strong>Catedratico:</strong> {p.profesor_nombres}, {p.profesor_apellidos}</div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-12"><strong>Curso:</strong> {p.curso_nombre}, <strong>Seccion: </strong> {p.curso_seccion}</div>
                                     </div>
                                     <div className="row">
                                         <div className="col-12"><strong>Descripcion:</strong> {p.publicacion_mensaje}</div>
@@ -116,6 +153,16 @@ export const PantallaInicial = () => {
                                         ) : (
                                             <p>No hay comentarios aún.</p>
                                         )}
+                                        <form onSubmit={(e) => handleComentario(e, p.publicacion_id)}>
+                                            <input
+                                                type="text"
+                                                placeholder="Escribe un comentario..."
+                                                value={formData.mensaje}
+                                                onChange={handleChange}
+                                                name="mensaje"
+                                            />
+                                            <button className="btn btn-primary m-2" type="submit">Comentar</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

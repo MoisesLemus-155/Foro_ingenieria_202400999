@@ -8,19 +8,16 @@
 
 .container-publis {
     font-family: Arial, sans-serif;
-    background-color: darkgrey;
+    background-color: burlywood;
     display: flex;
-    /* justify-content: center; */
-    /* align-items: center; */
-    height: 100vh;
+    height: 100%;
     width: 100vw;
 }
 
 .publis {
     font-family: Arial, sans-serif;
     background-color: darksalmon;
-    /* display: flex; */
-    height: 90vh;
+    height: 100%;
     width: 60vw;
     margin: 20px auto;
 }

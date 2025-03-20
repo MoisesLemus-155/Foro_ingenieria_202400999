@@ -9,6 +9,14 @@ export const apiLogin = async (registro_academico, password) => {
             registro_academico,
             password
         });
+        const registroAcademico = response.data.registro_academico; // Asegúrate de que el campo esté presente
+        if (registroAcademico) {
+            localStorage.setItem("token", "some_token"); // Aquí podrías guardar un token si tu backend lo proporciona
+            localStorage.setItem("registro_academico", registroAcademico); // Guardamos el registro académico
+            console.log('Registro académico guardado en localStorage:', registroAcademico);
+        } else {
+            console.error('No se encontró registro_academico en la respuesta');
+        }
         return true
     } catch ({ response: { data: { message } } }) {
         Swal.fire({

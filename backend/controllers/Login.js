@@ -23,7 +23,8 @@ const login = async (req, res) => {
         
         res.status(200).json({
             message: 'Inicio de sesión exitoso',
-            data: loged[0]
+            data: loged[0],
+            registro_academico: loged[0].registro_academico
         });
         
     } catch (error) {

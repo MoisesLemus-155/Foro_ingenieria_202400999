@@ -5,7 +5,7 @@ const { dbConection } = require('../database/connector');
 const getPublicaciones = async (req, res) => {
     try {
         const db = await dbConection();
-        const [publicaciones] = await db.query("SELECT p.id AS publicacion_id,p.usuario_id,p.cat_o_curso,p.mensaje AS publicacion_mensaje,p.fecha AS publicacion_fecha,COALESCE(JSON_ARRAYAGG(JSON_OBJECT('comentario_id', c.id,'mensaje', c.mensaje,'usuario_id', c.usuario_id)), JSON_ARRAY()) AS comentarios FROM publicacion p LEFT JOIN comentario c ON p.id = c.id_publicacion GROUP BY p.id ORDER BY p.fecha DESC");
+        const [publicaciones] = await db.query("SELECT p.id AS publicacion_id, p.usuario_id, p.cat_o_curso, p.mensaje AS publicacion_mensaje, p.fecha AS publicacion_fecha,COALESCE(curso.nombre, 'Curso no encontrado') AS curso_nombre,COALESCE(curso.seccion, 'N/A') AS curso_seccion,COALESCE(profesor.nombres, 'Profesor no encontrado') AS profesor_nombres, COALESCE(profesor.apellidos, '') AS profesor_apellidos,COALESCE(JSON_ARRAYAGG(JSON_OBJECT('comentario_id', c.id,'mensaje', c.mensaje,'usuario_id', c.usuario_id)),JSON_ARRAY()) AS comentarios FROM publicacion p LEFT JOIN comentario c ON p.id = c.id_publicacion LEFT JOIN profesor ON p.cat_o_curso = profesor.id LEFT JOIN curso ON profesor.cursos = curso.id GROUP BY p.id, curso.nombre, curso.seccion, profesor.nombres, profesor.apellidos ORDER BY p.fecha DESC");
         res.status(200).json(publicaciones);
     } catch (error) {
         console.error('Error en la obtención de publicaciones:', error);

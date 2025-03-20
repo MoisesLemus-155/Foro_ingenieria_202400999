@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS cursos_aprobados (
     curso_id INT,
     FOREIGN KEY (usuario_id) REFERENCES usuario(registro_academico) ON DELETE CASCADE,
     FOREIGN KEY (curso_id) REFERENCES curso(id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE IF NOT EXISTS profesor (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS comentario (
 );
 
 INSERT INTO usuario (registro_academico, nombres, apellidos, correo, password) VALUES
-(1001, 'Juan', 'Pérez', 'juan.perez@example.com', 'password123');
+(202400999, 'Alberto Moisés Gerardo', 'Lémus Alvarado', 'moiseslemus155@gmail.com', '12345');
 
 INSERT INTO curso (nombre, seccion, creditos) VALUES 
 ("Análisis y Diseño de Sistemas 1", "A", 9),
