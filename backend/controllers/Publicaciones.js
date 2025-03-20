@@ -83,11 +83,26 @@ const createComentario = async (req, res) => {
     }
 }
 
+const deleteMiComentario = async (req, res) => {
+    const registro_academico = req.session.registro_academico;
+    const { id } = req.params;
+    try {
+        const db = await dbConection();
+        await db.query('DELETE FROM comentario WHERE usuario_id = ? AND id = ?', [registro_academico, id]);
+        res.status(200).json({ message: 'Comentario eliminado' });
+    } catch (error) {
+        console.error('Error en la eliminación de comentario:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
+
 module.exports = {
     getPublicaciones,
     getMisPublicaciones,
     createPublicacion,
     deleteMiPublicacion,
     getComentarios,
-    createComentario
+    createComentario,
+    deleteMiComentario
 }

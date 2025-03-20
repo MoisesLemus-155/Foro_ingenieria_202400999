@@ -1,7 +1,8 @@
 const {Router} = require('express');
 const { getPublicaciones, getMisPublicaciones, createPublicacion, deleteMiPublicacion, 
         getComentarios, 
-        createComentario} = require('../controllers/Publicaciones');
+        createComentario,
+        deleteMiComentario} = require('../controllers/Publicaciones');
 const router = Router();
 
 router.get('/publicaciones', getPublicaciones);
@@ -16,4 +17,5 @@ router.get('/comentarios/:id', getComentarios);
 
 router.post('/comentar/:id', createComentario);
 
+router.delete('/deleteMiComentario/:id', deleteMiComentario);
 module.exports = router;
