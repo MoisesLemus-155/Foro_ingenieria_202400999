@@ -51,9 +51,43 @@ const deleteMiPublicacion = async (req, res) => {
     }
 }
 
+
+// -------------------------------------------------------- COMENTARIOS --------------------------------------------------------
+
+const getComentarios = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const db = await dbConection();
+        const [comentarios] = await db.query('SELECT * FROM comentario WHERE id_publicacion = ?', [id]);
+        res.status(200).json({
+            message: 'Comentarios obtenidos',
+            comentarios
+        });
+    } catch (error) {
+        console.error('Error en la obtención de comentarios:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
+const createComentario = async (req, res) => {
+    const registro_academico = req.session.registro_academico;
+    const {id} = req.params;
+    const {mensaje } = req.body;
+    try {
+        const db = await dbConection();
+        await db.query('INSERT INTO comentario (mensaje, usuario_id, id_publicacion) VALUES (?, ?, ?)', [mensaje, registro_academico, id]);
+        res.status(201).json({ message: 'Comentario creado' });
+    } catch (error) {
+        console.error('Error en la creación de comentario:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}
+
 module.exports = {
     getPublicaciones,
     getMisPublicaciones,
     createPublicacion,
-    deleteMiPublicacion
+    deleteMiPublicacion,
+    getComentarios,
+    createComentario
 }

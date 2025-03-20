@@ -89,11 +89,6 @@ const deleteCursosAprobados = async(req, res) => {
     const { id } = req.params;
     try {
         const db = await dbConection();
-        // const [totalmiscursos] = await db.query('SELECT COUNT(*) AS total_cursos FROM cursos_aprobados WHERE usuario_id = ?', [registro_academico]);
-        // if (id > totalmiscursos[0].total_cursos) {
-        //     return res.status(400).json({ message: 'El id del curso no existe' });
-        // }
-        
         await db.query('DELETE FROM cursos_aprobados WHERE usuario_id = ? AND curso_id = ?', [registro_academico, id]);
         res.status(200).json({ message: 'Curso eliminado' });
     } catch (error) {
