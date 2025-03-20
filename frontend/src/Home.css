@@ -1,0 +1,39 @@
+.container-navbar {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    width: 100vw;
+    margin: 0;
+}
+
+.container-publis {
+    font-family: Arial, sans-serif;
+    background-color: darkgrey;
+    display: flex;
+    /* justify-content: center; */
+    /* align-items: center; */
+    height: 100vh;
+    width: 100vw;
+}
+
+.publis {
+    font-family: Arial, sans-serif;
+    background-color: darksalmon;
+    /* display: flex; */
+    height: 90vh;
+    width: 60vw;
+    margin: 20px auto;
+}
+
+.card-public{
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    height: auto;
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius:0 30px ;
+    border: none;
+    box-shadow: 0 0 80px rgba(0, 0, 0, 0.1);
+}

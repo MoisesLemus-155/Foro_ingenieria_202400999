@@ -5,7 +5,7 @@ const { dbConection } = require('../database/connector');
 const getPublicaciones = async (req, res) => {
     try {
         const db = await dbConection();
-        const [publicaciones] = await db.query('SELECT * FROM publicacion');
+        const [publicaciones] = await db.query("SELECT p.id AS publicacion_id,p.usuario_id,p.cat_o_curso,p.mensaje AS publicacion_mensaje,p.fecha AS publicacion_fecha,COALESCE(JSON_ARRAYAGG(JSON_OBJECT('comentario_id', c.id,'mensaje', c.mensaje,'usuario_id', c.usuario_id)), JSON_ARRAY()) AS comentarios FROM publicacion p LEFT JOIN comentario c ON p.id = c.id_publicacion GROUP BY p.id ORDER BY p.fecha DESC");
         res.status(200).json(publicaciones);
     } catch (error) {
         console.error('Error en la obtención de publicaciones:', error);
